@@ -32,6 +32,16 @@ Repeat (for each generation):
 - **Set the state to the new state, and repeat the process until a terminal state is reached.**
 
 
+## Dataset
+
+Due to GitHub file size limitations, the Credit Card Fraud dataset is not included in this repository.
+
+Please download the dataset manually from:
+https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
+
+After downloading, place `creditcard.csv` inside the `data/` directory before running the program.
+
+
 ### SETUP:
 Install Python 3
 
