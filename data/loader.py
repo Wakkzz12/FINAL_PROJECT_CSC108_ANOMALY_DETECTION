@@ -13,19 +13,10 @@ def load_data(path, balance=False, max_samples=None):
     """
     Load and preprocess credit card transaction data.
     
-    Dataset features (from Kaggle Credit Card Fraud Detection):
-    - Time: Seconds elapsed between this transaction and first transaction
-    - V1-V28: PCA-transformed features (confidential for privacy)
-    - Amount: Transaction amount
-    - Class: Label (0=legitimate, 1=fraud)
-    
-    Time Complexity: O(N) where N = number of transactions
-    Space Complexity: O(N) for storing dataframe
-    
     Args:
         path (str): Path to creditcard.csv file
-        balance (bool): Whether to balance classes (helps with imbalanced data)
-        max_samples (int): Maximum samples to use (None = use all)
+        balance (bool): Whether to balance classes
+        max_samples (int): Maximum samples to use per class (None = use all fraud)
         
     Returns:
         pd.DataFrame: Processed transaction data
@@ -36,33 +27,24 @@ def load_data(path, balance=False, max_samples=None):
     print(f"Original dataset size: {len(df)} transactions")
     print(f"Fraud cases: {df['Class'].sum()} ({df['Class'].mean()*100:.3f}%)")
     
-    # Handle missing values (if any)
-    # Time Complexity: O(N * M) where M = number of columns
+    # Handle missing values
     if df.isnull().sum().sum() > 0:
         print("Warning: Missing values detected. Filling with column means.")
         df = df.fillna(df.mean())
     
-    # Optional: Balance the dataset to improve learning
-    # Credit card fraud is extremely imbalanced (~0.17% fraud)
-    # Balancing helps Q-Learning agent learn fraud patterns better
+    # Balance the dataset if requested
     if balance:
-        df = balance_dataset(df)
-    
-    # Optional: Limit dataset size for faster experimentation
-    # Time Complexity: O(1) - just slicing
-    if max_samples is not None and len(df) > max_samples:
-        print(f"Limiting to {max_samples} samples for faster training...")
-        # Stratified sampling to maintain class distribution
-        fraud = df[df['Class'] == 1]
-        legit = df[df['Class'] == 0]
+        # Calculate samples per class
+        if max_samples is not None:
+            samples_per_class = max_samples // 2  # Half for fraud, half for legit
+        else:
+            samples_per_class = None  # Use all available fraud
         
-        fraud_samples = min(len(fraud), max_samples // 2)
-        legit_samples = max_samples - fraud_samples
-        
-        df = pd.concat([
-            fraud.sample(n=fraud_samples, random_state=42),
-            legit.sample(n=legit_samples, random_state=42)
-        ]).sample(frac=1, random_state=42).reset_index(drop=True)
+        df = balance_dataset(df, target_size=samples_per_class)
+    elif max_samples is not None:
+        # Just limit total size without balancing
+        print(f"Limiting to {max_samples} samples...")
+        df = df.sample(n=min(len(df), max_samples), random_state=42).reset_index(drop=True)
     
     print(f"Final dataset size: {len(df)} transactions")
     print(f"Final fraud cases: {df['Class'].sum()} ({df['Class'].mean()*100:.3f}%)")
@@ -71,22 +53,13 @@ def load_data(path, balance=False, max_samples=None):
     return df
 
 
-def balance_dataset(df):
+def balance_dataset(df, target_size=None):
     """
-    Balance dataset using random undersampling of majority class.
-    
-    For fraud detection:
-    - Majority class (legitimate): ~99.83%
-    - Minority class (fraud): ~0.17%
-    
-    Undersampling reduces legitimate transactions to match fraud count.
-    Alternative: Could use oversampling (SMOTE) but undersampling is simpler.
-    
-    Time Complexity: O(N_minority) where N_minority = fraud count
-    Space Complexity: O(N_minority * 2) for balanced dataset
+    Balance dataset using combination of undersampling and oversampling.
     
     Args:
         df (pd.DataFrame): Original imbalanced dataset
+        target_size (int): Desired size per class (None = match minority class)
         
     Returns:
         pd.DataFrame: Balanced dataset
@@ -100,23 +73,43 @@ def balance_dataset(df):
     print(f"  Fraud transactions: {len(df_fraud)}")
     print(f"  Legitimate transactions: {len(df_legit)}")
     
-    # Undersample majority class to match minority class size
-    # Using sklearn.utils.resample for random sampling
-    df_legit_downsampled = resample(
-        df_legit,
-        replace=False,  # Sample without replacement
-        n_samples=len(df_fraud),  # Match minority class size
-        random_state=42  # Reproducibility
-    )
+    # If target_size specified, oversample fraud to reach it
+    if target_size is not None:
+        samples_per_class = target_size
+        
+        # Oversample minority class (fraud) with replacement
+        if len(df_fraud) < samples_per_class:
+            df_fraud_sampled = resample(
+                df_fraud,
+                replace=True,  # Allow duplicates
+                n_samples=samples_per_class,
+                random_state=42
+            )
+        else:
+            df_fraud_sampled = df_fraud.sample(n=samples_per_class, random_state=42)
+        
+        # Undersample majority class (legitimate)
+        df_legit_sampled = resample(
+            df_legit,
+            replace=False,
+            n_samples=samples_per_class,
+            random_state=42
+        )
+    else:
+        # Default: match minority class size
+        df_fraud_sampled = df_fraud
+        df_legit_sampled = resample(
+            df_legit,
+            replace=False,
+            n_samples=len(df_fraud),
+            random_state=42
+        )
     
-    # Combine minority class with downsampled majority class
-    df_balanced = pd.concat([df_fraud, df_legit_downsampled])
-    
-    # Shuffle the dataset to mix classes
-    # Important: Q-Learning is sensitive to order of examples
+    # Combine and shuffle
+    df_balanced = pd.concat([df_fraud_sampled, df_legit_sampled])
     df_balanced = df_balanced.sample(frac=1, random_state=42).reset_index(drop=True)
     
-    print(f"  Balanced dataset: {len(df_balanced)} transactions (50/50 split)")
+    print(f"  Balanced dataset: {len(df_balanced)} transactions ({len(df_fraud_sampled)} fraud + {len(df_legit_sampled)} legit)")
     
     return df_balanced
 

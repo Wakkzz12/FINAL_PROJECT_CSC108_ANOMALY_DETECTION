@@ -3,10 +3,10 @@ def get_reward(action, label):
     # label: 0 = legit, 1 = fraud
 
     if action == 0 and label == 0:
-        return 5     # correct approval
+        return 1     # correct approval
     if action == 1 and label == 1:
-        return 10    # correct fraud detection
+        return 50    # correct fraud detection
     if action == 0 and label == 1:
-        return -20   # fraud missed
+        return -100   # fraud missed
     if action == 1 and label == 0:
-        return -5    # false alarm
+        return -10    # false alarm
