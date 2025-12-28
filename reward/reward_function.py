@@ -1,12 +1,12 @@
 def get_reward(action, label):
-    # action: 0 = approve, 1 = flag
-    # label: 0 = legit, 1 = fraud
-
+    """
+    Fine-tuned reward function for F1 > 0.80
+    """
     if action == 0 and label == 0:
-        return 1     # correct approval
+        return 5      # ← Increased: Reward legitimate approvals more
     if action == 1 and label == 1:
-        return 50    # correct fraud detection
+        return 50     
     if action == 0 and label == 1:
-        return -100   # fraud missed
+        return -80    
     if action == 1 and label == 0:
-        return -10    # false alarm
+        return -25    # ← Increased: Penalize false alarms more
