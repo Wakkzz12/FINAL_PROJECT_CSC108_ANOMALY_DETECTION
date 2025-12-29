@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-12-29T01:14:50.891469",
+  "timestamp": "2025-12-29T09:52:55.031079",
   "configuration": {
     "alpha": 0.2,
     "gamma": 0.95,
@@ -8,12 +8,12 @@
     "max_samples": 20000
   },
   "performance": {
-    "detection_rate": 0.8767893660531697,
-    "precision": 0.7319675629534784,
-    "f1_score": 0.797859967434287,
-    "accuracy": 0.7826956739184796,
-    "fpr": 0.3073910915320607
+    "detection_rate": 0.8087934560327198,
+    "precision": 0.8343881856540084,
+    "f1_score": 0.8213914849428868,
+    "accuracy": 0.8279569892473119,
+    "fpr": 0.15369554576603034
   },
-  "quality": "GOOD \u2713\u2713",
-  "category": "Production-Ready"
+  "quality": "EXCELLENT \u2713\u2713\u2713",
+  "category": "Research-Quality"
 }

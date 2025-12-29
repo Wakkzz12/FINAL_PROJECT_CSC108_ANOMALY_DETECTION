@@ -20,7 +20,6 @@ MIN_EPSILON = 0.01    # Minimum exploration rate
 # TRAINING PARAMETERS
 # =============================================================================
 EPISODES = 100        # Number of training episodes
-ANOMALY_PENALTY = 10  # Not used currently
 
 # =============================================================================
 # ROBUSTNESS FEATURES (NEW)
