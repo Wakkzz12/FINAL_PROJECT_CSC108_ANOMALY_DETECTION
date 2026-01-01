@@ -7,7 +7,7 @@
 # =============================================================================
 
 from config.config import *
-from data.loader import load_data, split_train_test
+from data.loader import load_data  # Removed split_train_test
 from environment.fraud_env import FraudEnvironment
 from agent.q_learning_agent import QLearningAgent
 from training.trainer import train_robust  # Use robust trainer
@@ -49,7 +49,12 @@ data = load_data(
     max_samples=MAX_SAMPLES
 )
 
-train_data, test_data = split_train_test(data, TRAIN_TEST_SPLIT)
+# MODIFIED: Use the exact same data for training and testing
+# Bypassing split_train_test as requested
+train_data = data
+test_data = data
+print(f"Training set: {len(train_data)} transactions (100% of data)")
+print(f"Testing set: {len(test_data)} transactions (100% of data)")
 print()
 
 # =============================================================================

@@ -112,29 +112,3 @@ def balance_dataset(df, target_size=None):
     print(f"  Balanced dataset: {len(df_balanced)} transactions ({len(df_fraud_sampled)} fraud + {len(df_legit_sampled)} legit)")
     
     return df_balanced
-
-
-def split_train_test(df, train_ratio=0.8):
-    """
-    Split data into training and testing sets.
-    
-    Time Complexity: O(N)
-    Space Complexity: O(N)
-    
-    Args:
-        df (pd.DataFrame): Full dataset
-        train_ratio (float): Proportion for training (0 to 1)
-        
-    Returns:
-        tuple: (train_df, test_df)
-    """
-    split_idx = int(len(df) * train_ratio)
-    
-    # Sequential split (maintains temporal order if important)
-    train_df = df.iloc[:split_idx].reset_index(drop=True)
-    test_df = df.iloc[split_idx:].reset_index(drop=True)
-    
-    print(f"Training set: {len(train_df)} transactions")
-    print(f"Testing set: {len(test_df)} transactions")
-    
-    return train_df, test_df
