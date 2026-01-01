@@ -85,30 +85,37 @@ This design encourages fraud prevention while minimizing unnecessary transaction
 FINAL_PROJECT_CSC108_ANOMALY_DETECTION/
 
 ├── data/
+
 │ └── creditcard_subset.csv
 │
 
 ├── environment/
+
 │ └── environment.py
 │
 
 ├── qlearning/
+
 │ └── q_learning.py
 │
 
 ├── reward/
+
 │ └── reward_function.py
 │
 
 ├── training/
+
 │ └── trainer.py
 │
 
 ├── utils/
+
 │ └── discretizer.py
 │
 
 ├── visualization/
+
 │ └── plot_results.py
 │
 
