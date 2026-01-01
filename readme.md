@@ -83,7 +83,6 @@ This design encourages fraud prevention while minimizing unnecessary transaction
 ---
 ## Project Structure
 FINAL_PROJECT_CSC108_ANOMALY_DETECTION/
-│
 ├── data/
 │ └── creditcard_subset.csv
 │
@@ -106,7 +105,6 @@ FINAL_PROJECT_CSC108_ANOMALY_DETECTION/
 │ └── plot_results.py
 │
 ├── main.py
-├── requirements.txt
 ├── README.md
 └── .gitignore
 
