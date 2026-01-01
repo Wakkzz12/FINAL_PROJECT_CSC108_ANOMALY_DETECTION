@@ -113,7 +113,7 @@ print(f"Q-table size: {len(agent.q)} state-action pairs learned")
 
 # Check if training was successful
 if len(rewards_history) < 10:
-    print("\n⚠️  WARNING: Very few episodes completed!")
+    print("\n WARNING: Very few episodes completed!")
     print("   This may indicate:")
     print("   - Dataset too small")
     print("   - Epsilon decay too aggressive")
@@ -137,7 +137,7 @@ print_evaluation_results(test_metrics)
 
 # Additional robustness check
 if test_metrics['f1_score'] < 0.5:
-    print("⚠️  WARNING: Low F1 score detected!")
+    print("  WARNING: Low F1 score detected!")
     print("   Possible causes:")
     print("   - Insufficient training (try more episodes)")
     print("   - Dataset too small (increase MAX_SAMPLES)")
@@ -186,13 +186,13 @@ print(f"  - Accuracy: {test_metrics['accuracy']*100:.2f}%")
 print(f"\nQuality Assessment:")
 f1 = test_metrics['f1_score']
 if f1 >= 0.80:
-    quality = "EXCELLENT ✓✓✓"
+    quality = "EXCELLENT"
 elif f1 >= 0.70:
-    quality = "GOOD ✓✓"
+    quality = "GOOD"
 elif f1 >= 0.60:
-    quality = "ACCEPTABLE ✓"
+    quality = "ACCEPTABLE "
 else:
-    quality = "NEEDS IMPROVEMENT ✗"
+    quality = "NEEDS IMPROVEMENT"
 
 print(f"  Overall Quality: {quality}")
 
@@ -202,9 +202,9 @@ precision = test_metrics['precision']
 fpr = test_metrics['false_positive_rate']
 
 if detection >= 0.85 and precision >= 0.70 and fpr <= 0.35:
-    category = "Production-Ready"
+    category = "Production-Ready/High-Quality"
 elif detection >= 0.80 and precision >= 0.60:
-    category = "Research-Quality"
+    category = "Research-Quality/Prototype"
 else:
     category = "Experimental"
 
