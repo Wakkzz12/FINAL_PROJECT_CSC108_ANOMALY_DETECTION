@@ -1,47 +1,127 @@
-# Q LEARNING ALGORITHM ON ANOMALY DETECTION
-Q-Learning is an off-policy (can update the estimated value functions using hypothetical actions, those which have not actually been tried) algorithm for temporal difference learning ( method to estimate value functions). It can be proven that given sufficient training, the Q-learning converges with probability 1 to a close approximation of the action-value function for an arbitrary target policy. Q-Learning learns the optimal policy even when actions are selected according to a more exploratory or even random policy. Q-learning can be implemented as follows:
+# Credit Card Fraud Detection using Q-Learning (Anomaly Detection)
+
+## Project Overview
+This project implements a Credit Card Fraud Detection System using Q-Learning, a Reinforcement Learning (RL) algorithm. Fraud detection is modeled as an anomaly detection problem, where fraudulent transactions are considered rare and abnormal behaviors that deviate from normal transaction patterns.
+
+The system learns a decision-making policy that determines whether a transaction should be approved or flagged as fraudulent based on reward-based feedback.
+
+This project was developed for CSC108 – Algorithms and Complexity and follows the prescribed course learning outcomes and rubric.
+
+---
+
+## Objectives
+- Apply Q-Learning (Reinforcement Learning) to a real-world application
+- Model credit card fraud detection as anomaly detection
+- Design a modular and maintainable Python system
+- Analyze agent behavior using rewards, penalties, and learning curves
+
+---
+
+## Problem Description
+Credit card fraud causes significant financial loss and security risks. Fraudulent transactions occur infrequently but differ significantly from legitimate spending behavior, making them anomalies in transaction data.
+
+Instead of relying solely on supervised classification, this project uses reinforcement learning, where an agent interacts with transaction states, performs actions, and learns from reward feedback to minimize fraud-related loss over time.
+
+---
+
+## Algorithm Used: Q-Learning
+Q-Learning is a model-free reinforcement learning algorithm that learns the optimal action-selection policy by estimating the expected rewards of actions taken in different states.
+
+### Q-Learning Update Rule
+Q(s, a) ← Q(s, a) + α [ r + γ max(Q(s′, a′)) − Q(s, a) ]
 
 
-```
-Initialize Q(s,a) arbitrarily
-Repeat (for each generation):
-	Initialize state s
-	While (s is not a terminal state):		
-		Choose a from s using policy derived from Q
-		Take action a, observe r, s'
-		Q(s,a) += alpha * (r + gamma * max,Q(s') - Q(s,a))
-		s = s'
-```
+Where:
+- s = current state
+- a = action
+- r = reward
+- α = learning rate
+- γ = discount factor
 
-### WHERE:
-- **s:** is the previous state
-- **a:** is the previous action
-- **Q():** is the Q-learning algorithm
-- **s':** is the current state
-- **alpha:** is the the learning rate, set generally between 0 and 1. Setting it to 0 means that the Q-values are never updated, thereby nothing is learned. Setting alpha to a high value such as 0.9 means that learning can occur quickly.
-- **gamma:** is the discount factor, also set between 0 and 1. This models the fact that future rewards are worth less than immediate rewards.
-- **max,:** is the the maximum reward that is attainable in the state following the current one (the reward for taking the optimal action thereafter).  
+---
 
-### THE ALGORITHM CAN BE INTERPRETED AS:
+## Fraud Detection as Anomaly Detection
+Fraud detection is treated as a specialized form of anomaly detection. Normal transactions follow consistent spending patterns, while fraudulent transactions deviate significantly from these patterns.
 
-- **Initialize the Q-values table, Q(s, a)**
-- **Observe the current state, s.**
-- **Choose an action, a, for that state based on the selection policy.**
-- **Take the action, and observe the reward, r, as well as the new state, s'.**
-- **Update the Q-value for the state using the observed reward and the maximum reward possible for the next state.**
-- **Set the state to the new state, and repeat the process until a terminal state is reached.**
+The system does not directly classify transactions using labels. Labels are used only to provide reward feedback, allowing the agent to learn anomalous behavior through interaction with the environment.
 
+---
+
+## State Representation
+Each transaction is discretized into a state defined as:
+State = (Transaction Amount Level, Time Pattern, Risk Level)
+
+
+Possible values include:
+- Amount Level: LOW, MEDIUM, HIGH
+- Time Pattern: NORMAL, UNUSUAL
+- Risk Level: LOW, HIGH
+
+This discrete representation enables efficient Q-Learning while remaining interpretable.
+
+---
+
+## Actions
+The agent can perform the following actions:
+- 0 → Approve transaction
+- 1 → Flag transaction as fraudulent
+
+---
+
+## Reward and Penalty Design
+The reward system reflects real-world fraud detection costs:
+
+| Outcome | Reward |
+|------|------|
+| Fraud correctly flagged | +15 |
+| Legitimate transaction approved | +50 |
+| Legitimate transaction flagged | -60 |
+| Fraud approved | -40 |
+
+This design encourages fraud prevention while minimizing unnecessary transaction blocking.
+
+---
+## Project Structure
+FINAL_PROJECT_CSC108_ANOMALY_DETECTION/
+│
+├── data/
+│ └── creditcard_subset.csv
+│
+├── environment/
+│ └── environment.py
+│
+├── qlearning/
+│ └── q_learning.py
+│
+├── reward/
+│ └── reward_function.py
+│
+├── training/
+│ └── trainer.py
+│
+├── utils/
+│ └── discretizer.py
+│
+├── visualization/
+│ └── plot_results.py
+│
+├── main.py
+├── requirements.txt
+├── README.md
+└── .gitignore
 
 ## Dataset
-
 Due to GitHub file size limitations, the Credit Card Fraud dataset is not included in this repository.
 
-Please download the dataset manually from:
-https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
+Please download the dataset manually from: https://drive.google.com/file/d/1BpB5p_qOR6iJD0zSkZ7sE1M4KpJ_qdMH/view?usp=sharing
 
-After downloading, place `creditcard.csv` inside the `data/` directory before running the program.
+### Dataset Setup
+Download `creditcard.csv` from gdgrive
+Place the file inside the `data/` directory
+Use the provided subset file for testing and development
+
+### Install Dependencies
+pip install pandas numpy matplotlib scikit-learn
 
 
-### SETUP:
-Install Python 3
 
