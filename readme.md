@@ -136,7 +136,18 @@ Place the file inside the `data/` directory
 Use the provided subset file for testing and development
 
 ### Install Dependencies
+```
 pip install pandas numpy matplotlib scikit-learn
+```
+
+```
+run python main.py
+```
+
+```
+on vscode (CRTL + ALT + N) to run
+```
+
 
 
 
